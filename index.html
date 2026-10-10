@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chispa - Empleo Juvenil</title>
+    <style>
+        :root {
+            --primary-color: #ff6b35;
+            --secondary-color: #004e89;
+            --bg-color: #f7f9fc;
+            --text-color: #333;
+            --success-color: #28a745;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            margin: 0.5rem 0 0;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .role-buttons, .auth-options {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background-color: #e55a24;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #003366;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .job-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .job-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.2rem;
+            background: #fff;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .job-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .job-title {
+            color: var(--secondary-color);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-details span {
+            display: inline-block;
+            background: #eef2f7;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .click-hint {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .auth-switch a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid #c3e6cb;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Chispa</h1>
+        <p>Tu primera oportunidad empieza aquí[cite: 5]</p>
+    </header>
+
+    <div class="container">
+
+        <!-- 1. SELECCIÓN DE ROL -->
+        <section id="role-selection" class="card text-center" style="text-align: center;">
+            <h2>¿Cómo deseas ingresar a Chispa?</h2>
+            <p>Selecciona tu perfil para continuar</p>
+            <div class="role-buttons">
+                <button class="btn" onclick="chooseRole('estudiante')">👨‍🎓 Estudiante (Trabajador)</button>
+                <button class="btn btn-secondary" onclick="chooseRole('empleador')">🏢 Empleador</button>
+            </div>
+        </section>
+
+        <!-- 2. AUTENTICACIÓN (LOGIN / REGISTRO) -->
+        <section id="auth-view" class="card hidden">
+            <a class="back-link" onclick="goHome()">← Cambiar de rol</a>
+            <h2 id="auth-title">Acceso</h2>
+            
+            <div class="auth-options" id="auth-choice-buttons">
+                <button class="btn" onclick="showForm('login')">Iniciar Sesión</button>
+                <button class="btn btn-secondary" onclick="showForm('register')">Registrarse</button>
+            </div>
+
+            <!-- Formulario de Login -->
+            <form id="login-form" class="hidden" onsubmit="handleLogin(event)">
+                <h3>Iniciar Sesión como <span role-text></span></h3>
+                <div class="form-group">
+                    <label>Correo Electrónico:</label>
+                    <input type="email" id="login-email" required placeholder="correo@ejemplo.com">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" id="login-password" required placeholder="********">
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+                <div class="auth-switch">
+                    ¿No tienes cuenta? <a onclick="showForm('register')">Regístrate aquí</a>
+                </div>
+            </form>
+
+            <!-- Formulario de Registro -->
+            <form id="register-form" class="hidden" onsubmit="handleRegister(event)">
+                <h3>Crear Cuenta de <span role-text></span></h3>
+                <div class="form-group">
+                    <label>Nombre Completo / Negocio:</label>
+                    <input type="text" id="reg-name" required placeholder="Tu nombre o empresa">
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico:</label>
+                    <input type="email" id="reg-email" required placeholder="correo@ejemplo.com">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" id="reg-password" required placeholder="********">
+                </div>
+                <button type="submit" class="btn btn-success">Registrarse y Entrar</button>
+                <div class="auth-switch">
+                    ¿Ya tienes cuenta? <a onclick="showForm('login')">Inicia sesión</a>
+                </div>
+            </form>
+        </section>
+
+        <!-- 3. VISTA ESTUDIANTE: LISTA DE EMPLEOS -->
+        <section id="student-view" class="card hidden">
+            <a class="back-link" onclick="goHome()">← Cerrar Sesión</a>
+            <h2>Empleos Disponibles para Estudiantes</h2>
+            <p>Haz clic en una oferta para ver más información y postularte.</p>
+            <div class="job-list" id="job-list-container"></div>
+        </section>
+
+        <!-- 4. VISTA DETALLE DEL EMPLEO -->
+        <section id="job-detail-view" class="card hidden">
+            <a class="back-link" onclick="showStudentList()">← Volver a la lista de empleos</a>
+            <div id="job-detail-content"></div>
+            <hr style="margin: 2rem 0; border: 0; border-top: 1px solid #eee;">
+
+            <div id="application-form-container">
+                <h3>Postularme a esta vacante</h3>
+                <form id="apply-form" onsubmit="handleApplySubmit(event)">
+                    <div class="form-group">
+                        <label>Nombre Completo:</label>
+                        <input type="text" required placeholder="Juan Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp / Teléfono:</label>
+                        <input type="tel" required placeholder="7000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label>Correo Electrónico:</label>
+                        <input type="email" required placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Currículum (Imagen o PDF):</label>
+                        <input type="file" accept="image/*,.pdf" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Enviar Postulación</button>
+                </form>
+            </div>
+
+            <div id="success-message" class="alert-success hidden">
+                <h3>¡Postulación Enviada con Éxito! 🎉</h3>
+                <p>Tu información y currículum han sido enviados al correo del empleador.</p>
+                <p><strong>Espera respuesta de la empresa pronto.</strong></p>
+                <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="showStudentList()">Ver más empleos</button>
+            </div>
+        </section>
+
+        <!-- 5. VISTA EMPLEADOR: PUBLICAR EMPLEO -->
+        <section id="employer-view" class="card hidden">
+            <a class="back-link" onclick="goHome()">← Cerrar Sesión</a>
+            <h2>Panel de Empleador: Publicar Nueva Vacante</h2>
+            <p>Completa la información para hacer llegar tu oferta al talento joven local[cite: 3].</p>
+            
+            <form id="job-form" onsubmit="handleJobSubmit(event)">
+                <div class="form-group">
+                    <label>Título del Puesto:</label>
+                    <input type="text" id="job-title-input" required placeholder="Ej. Auxiliar de Tienda">
+                </div>
+                <div class="form-group">
+                    <label>Nombre del Negocio o Empresa:</label>
+                    <input type="text" id="business-name" required placeholder="Librería El Estudiante">
+                </div>
+                <div class="form-group">
+                    <label>Correo de Contacto (Donde caerán las postulaciones):</label>
+                    <input type="email" id="employer-email" required placeholder="rrhh@negocio.com">
+                </div>
+                <div class="form-group">
+                    <label>Descripción Detallada del Empleo:</label>
+                    <textarea id="job-desc" rows="4" required placeholder="Actividades y detalles de la vacante..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Horarios / Disponibilidad:</label>
+                    <input type="text" id="job-time" required placeholder="Fines de semana">
+                </div>
+                <div class="form-group">
+                    <label>Rango de Edad:</label>
+                    <input type="text" id="job-age" required placeholder="16 a 22 años">
+                </div>
+                <div class="form-group">
+                    <label>Nivel de Educación:</label>
+                    <input type="text" id="job-edu" required placeholder="Bachillerato en curso">
+                </div>
+                <button type="submit" class="btn btn-secondary">Publicar Empleo</button>
+            </form>
+        </section>
+
+    </div>
+
+    <script>
+        let currentRole = '';
+        let selectedJobId = null;
+
+        function chooseRole(role) {
+            currentRole = role;
+            document.getElementById('role-selection').classList.add('hidden');
+            document.getElementById('auth-view').classList.remove('hidden');
+            
+            const roleName = role === 'estudiante' ? 'Estudiante (Trabajador)' : 'Empleador';
+            document.querySelectorAll('[role-text]').forEach(el => el.textContent = roleName);
+            
+            document.getElementById('auth-choice-buttons').classList.remove('hidden');
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('register-form').classList.add('hidden');
+        }
+
+        function showForm(type) {
+            document.getElementById('auth-choice-buttons').classList.add('hidden');
+            if (type === 'login') {
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('register-form').classList.add('hidden');
+            } else {
+                document.getElementById('register-form').classList.remove('hidden');
+                document.getElementById('login-form').classList.add('hidden');
+            }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append('nombre', document.getElementById('reg-name').value);
+            formData.append('correo', document.getElementById('reg-email').value);
+            formData.append('password', document.getElementById('reg-password').value);
+            formData.append('rol', currentRole);
+
+            fetch('registrar.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if(data.success) {
+                    if (currentRole === 'estudiante') {
+                        showStudentList();
+                    } else {
+                        document.getElementById('auth-view').classList.add('hidden');
+                        document.getElementById('employer-view').classList.remove('hidden');
+                    }
+                }
+            })
+            .catch(err => console.error('Error:', err));
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append('correo', document.getElementById('login-email').value);
+            formData.append('password', document.getElementById('login-password').value);
+
+            fetch('login.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert(`¡Bienvenido de nuevo, ${data.nombre}!`);
+                    document.getElementById('auth-view').classList.add('hidden');
+                    if (data.rol === 'estudiante') {
+                        showStudentList();
+                    } else {
+                        document.getElementById('employer-view').classList.remove('hidden');
+                    }
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(err => console.error('Error:', err));
+        }
+
+        function showStudentList() {
+            document.getElementById('employer-view').classList.add('hidden');
+            document.getElementById('job-detail-view').classList.add('hidden');
+            document.getElementById('student-view').classList.remove('hidden');
+            cargarEmpleos();
+        }
+
+        function goHome() {
+            document.getElementById('student-view').classList.add('hidden');
+            document.getElementById('employer-view').classList.add('hidden');
+            document.getElementById('job-detail-view').classList.add('hidden');
+            document.getElementById('auth-view').classList.add('hidden');
+            document.getElementById('role-selection').classList.remove('hidden');
+        }
+
+        function cargarEmpleos() {
+            fetch('obtener_empleos.php')
+            .then(res => res.json())
+            .then(jobsData => {
+                const container = document.getElementById('job-list-container');
+                container.innerHTML = '';
+                if(jobsData.length === 0) {
+                    container.innerHTML = '<p>No hay empleos registrados aún.</p>';
+                    return;
+                }
+                jobsData.forEach(job => {
+                    const card = document.createElement('div');
+                    card.className = 'job-card';
+                    card.onclick = () => openJobDetail(job);
+                    card.innerHTML = `
+                        <h3 class="job-title">${job.titulo_puesto}</h3>
+                        <p><strong>Empresa:</strong> ${job.nombre_negocio}</p>
+                        <div class="job-details">
+                            <span>⏱️ ${job.horario}</span>
+                            <span>🎂 ${job.rango_edad}</span>
+                            <span>📚 ${job.nivel_educativo}</span>
+                        </div>
+                        <span class="click-hint">📄 Ver detalles y aplicar →</span>
+                    `;
+                    container.appendChild(card);
+                });
+            })
+            .catch(err => console.error('Error cargando empleos:', err));
+        }
+
+        let currentJobData = null;
+        function openJobDetail(job) {
+            currentJobData = job;
+            document.getElementById('job-detail-content').innerHTML = `
+                <h2 style="color: var(--secondary-color); margin-bottom: 0.2rem;">${job.titulo_puesto}</h2>
+                <h3 style="color: #666; margin-top: 0;">${job.nombre_negocio}</h3>
+                <div class="job-details" style="margin-bottom: 1.5rem;">
+                    <span>⏱️ ${job.horario}</span>
+                    <span>🎂 ${job.rango_edad}</span>
+                    <span>📚 ${job.nivel_educativo}</span>
+                </div>
+                <h4>Descripción:</h4>
+                <p style="line-height: 1.6; color: #444;">${job.descripcion}</p>
+            `;
+
+            document.getElementById('apply-form').reset();
+            document.getElementById('application-form-container').classList.remove('hidden');
+            document.getElementById('success-message').classList.add('hidden');
+
+            document.getElementById('student-view').classList.add('hidden');
+            document.getElementById('job-detail-view').classList.remove('hidden');
+        }
+
+        function handleApplySubmit(event) {
+            event.preventDefault();
+            document.getElementById('application-form-container').classList.add('hidden');
+            document.getElementById('success-message').classList.remove('hidden');
+        }
+
+        function handleJobSubmit(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append('titulo_puesto', document.getElementById('job-title-input').value);
+            formData.append('nombre_negocio', document.getElementById('business-name').value);
+            formData.append('correo_empleador', document.getElementById('employer-email').value);
+            formData.append('descripcion', document.getElementById('job-desc').value);
+            formData.append('horario', document.getElementById('job-time').value);
+            formData.append('rango_edad', document.getElementById('job-age').value);
+            formData.append('nivel_educativo', document.getElementById('job-edu').value);
+
+            fetch('publicar_empleo.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert('¡Vacante publicada con éxito en la base de datos!');
+                    document.getElementById('job-form').reset();
+                    showStudentList();
+                } else {
+                    alert('Error al publicar: ' + data.message);
+                }
+            })
+            .catch(err => console.error('Error:', err));
+        }
+    </script>
+</body>
+</html>
